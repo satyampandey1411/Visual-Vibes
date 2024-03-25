@@ -6,10 +6,10 @@ from io import BytesIO
 
 app = Flask(__name__)
 
-
 @app.route('/')
 def index():
     return render_template('editing.html')
+    
 
 @app.route('/rotate', methods=['POST'])
 def rotate():
@@ -150,5 +150,38 @@ def apply_filter_to_image(image_file, filter_type):
     encoded_image = base64.b64encode(image_buffer.getvalue()).decode('utf-8')
     
     return encoded_image
+
+@app.route('/crop', methods=['POST'])
+def crop():
+    if 'image' not in request.files:
+        return "No image uploaded", 400
+
+    image_file = request.files['image']
+    if image_file.filename == '':
+        return "No image selected", 400
+
+    # Get cropping dimensions from the request
+    crop_width = int(request.form['cropWidth'])
+    crop_height = int(request.form['cropHeight'])
+    crop_x = int(request.form['cropX'])
+    crop_y = int(request.form['cropY'])
+
+    cropped_image_data = crop_image(image_file, crop_width, crop_height, crop_x, crop_y)
+    
+    return cropped_image_data, 200
+
+def crop_image(image_file, crop_width, crop_height, crop_x, crop_y):
+    image = Image.open(image_file)
+
+    # Crop the image using the provided dimensions
+    cropped_image = image.crop((crop_x, crop_y, crop_x + crop_width, crop_y + crop_height))
+
+    # Convert cropped image to base64 string
+    image_buffer = io.BytesIO()
+    cropped_image.save(image_buffer, format='PNG')
+    encoded_image = base64.b64encode(image_buffer.getvalue()).decode('utf-8')
+    
+    return encoded_image
+
 if __name__ == '__main__':
     app.run(debug=True)
