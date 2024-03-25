@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Filter</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background-color:  black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      position: relative;
+      width: 97%;
+      max-width: 1000px;
+      height: 600px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .filter-strip {
+      width: 60px;
+      background-color: black;
+      border-right: 1px solid #cccccc76;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      height: 100%;
+      padding: 0;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+      z-index: 1;
+    }
+
+    .filter {
+      width: 60px;
+      height: 60px;
+      background-color: black;
+      cursor: pointer;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .filter-icon {
+      margin-bottom: 5px;
+    }
+
+    .filter-text {
+      font-size: 12px;
+    }
+
+    .horizontal-strip {
+      width: 100%; /* Adjusted to fill the width */
+      height: 60px;
+      background-color: black;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0;
+    }
+
+    .bottom-strip {
+      width: 100%;
+      height: 60px;
+      background-color: black;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0;
+      border-top: 1px solid #ccc;
+    }
+
+    .image {
+      flex: 1;
+      background-image: url(''); /* Add your image URL here */
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border-radius: 0 0 10px 10px;
+      margin: 20px 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-area {
+      width: calc(100% - 20px);
+      height: 60px;
+      border-top: 1px solid #ccc;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .vertical-strip-container {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      width: 60px;
+      background-color: #f0f0f0;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+      z-index: 1;
+    }
+
+    .center-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    /* Center the image within the container */
+    #imageDisplay {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 800%;
+      height: 400%;
+      overflow: hidden; /* Ensure the image doesn't overflow its container */
+    }
+
+    /* Ensure the image fills the container */
+    #imageDisplay img {
+      width: auto; /* Allow the image to expand */
+      height: 100%; /* Allow the image to expand */
+      object-fit: contain;
+    }
+
+    input[type=file] {
+      display: none;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="vertical-strip-container">
+    <div class="filter-strip">
+      <a href="#" class="filter" id="rotateButton">
+        <i class='bx bx-rotate-left filter-icon' style="font-size: 30px; color: white;"></i>
+        <span class="filter-text" style="font-size: 17px">Rotate</span>
+      </a>
+      <a href="#" class="filter" id="blurButton">
+        <i class='fas fa-cloud' style="font-size: 30px; color: white;"></i>
+        <span class="filter-text" style="font-size: 17px">Blur</span>
+      </a>
+      <a href="#" class="filter" id="cropButton">
+        <i class='bx bx-crop filter-icon' style="font-size: 30px; color: white;"></i>
+        <span class="filter-text" style="font-size: 17px">Crop</span>
+      </a>     
+      <a href="#" class="filter" id="contrastButton">
+        <i class='fas fa-sliders-h' style="font-size: 30px; color: white;"></i>
+        <span class="filter-text" style="font-size: 17px">Contrast</span>
+      </a>
+      <a href="#" class="filter" id="brightnessButton">
+        <i class='bx bxs-brightness-half filter-icon' style="font-size: 30px; color: white;"></i>
+        <span class="filter-text" style="font-size: 17px">Brightness</span>
+      </a>
+      <a href="#" class="filter" id="filtersButton">
+        <i class='bx bx-photo-album' style="font-size: 30px; color: white;"></i>
+        <span class="filter-text" style="font-size: 17px">Filters</span>
+      </a> 
+    </div>
+  </div>
+
+  <div class="horizontal-strip">
+    <a href="#" class="filter">
+      <i class='bx bx-undo' style="font-size : 30px; color: white;"></i>
+      <span class="undo" style="font-size: 20px">Undo</span>
+    </a>
+    <a href="#" class="filter">
+      <i class='bx bx-redo' style='font-size:30px;color:white'></i>
+      <span class="redo" style="font-size: 20px">Redo</span>
+    </a>
+    <a href="#" class="filter">
+      <i class="bx bx-check-circle" style="font-size: 30px; color:white;"></i>
+      <span class="save" style="font-size: 20px">Save</span>
+    </a>
+    <a href="#" class="filter">
+      <i class="fas fa-sync" style="font-size:25px;color:white"></i>
+      <span class="reset" style="font-size: 20px">Reset</span>
+    </a>
+    <a href="#" class="filter">
+      <i class='bx bx-download' style="font-size: 30px; color: white;"></i>
+      <span class="download" style="font-size: 20px">Download</span>
+    </a> 
+  </div>
+
+  <div class="image" id="imageDisplay"></div>
+  <input type="file" id="imageInput" accept="image/*" style="display: none;"> <!-- Hide the file input -->
+  <button class="center-button" id="selectImageButton">Select Image</button>
+
+  <div class="bottom-strip" id="bottomStrip">
+
+    <div id="rotateSection" style="display: none;">
+      <label for="angle">Rotation Angle:</label>
+      <input type="range" name="angle" id="angle" min="-180" max="180" value="0" step="1" oninput="updateAngle(this.value)">
+      <output for="angle" id="angleOutput">0</output> degrees
+      <button type="button" onclick="rotateImage()">Rotate</button>
+    </div>
+
+    <div id="blurSection" style="display: none;">
+      <label for="intensity">Blur Intensity:</label>
+      <input type="range" name="intensity" id="intensity" min="0" max="10" value="0" step="1" oninput="updateIntensity(this.value)">
+      <output for="intensity" id="intensityOutput">0</output>
+      <button type="button" onclick="blurImage()">Apply Blur</button>
+    </div>
+
+    <div id="brightnessSection" style="display: none;">
+      <label for="brightness">Brightness Level:</label>
+      <input type="range" name="brightness" id="brightness" min="0" max="200" value="100" step="1" oninput="updateBrightness(this.value)">
+      <output for="brightness" id="brightnessOutput">100</output>
+      <button type="button" onclick="adjustBrightness()">Apply Brightness</button>
+    </div>
+
+    <div id="contrastSection" style="display: none;">
+      <label for="contrast">Contrast:</label>
+      <input type="range" name="contrast" id="contrast" min="0" max="200" value="100" step="1" oninput="updateContrast(this.value)">
+      <output for="contrast" id="contrastOutput">100</output>
+      <button type="button" onclick="adjustContrast()">Apply Contrast</button>
+    </div>
+
+    <div id="filtersSection" style="display: none;">
+      <button id="greyScaleButton">Grey Scale</button>
+      <button id="fineEdgesButton">Fine Edges</button>
+      <button id="embossButton">Emboss</button>
+      <button id="edgeEnhancedMoreButton">Edge Enhanced More</button>
+    </div>
+
+  </div>
+  
+</div>
+</body>
+<script>
+
+document.getElementById('selectImageButton').addEventListener('click', function() {
+    document.getElementById('imageInput').click(); // Trigger the click event of the file input
+});
+
+document.getElementById('rotateButton').addEventListener('click', function() {
+    showSection('rotateSection');
+});
+
+document.getElementById('blurButton').addEventListener('click', function() {
+    showSection('blurSection');
+});
+
+document.getElementById('contrastButton').addEventListener('click', function() {
+    showSection('contrastSection');
+});
+
+document.getElementById('brightnessButton').addEventListener('click', function() {
+    showSection('brightnessSection');
+});
+
+document.getElementById('filtersButton').addEventListener('click', function() {
+    showSection('filtersSection');
+});
+
+
+// Function to show a specific section and hide others
+function showSection(sectionId) {
+    // Hide all sections within the bottom strip
+    const sections = document.querySelectorAll('#bottomStrip > div');
+    sections.forEach(section => {
+        section.style.display = 'none';
+    });
+    // Show the selected section
+    document.getElementById(sectionId).style.display = 'block';
+}
+
+ document.getElementById('greyScaleButton').addEventListener('click', function() {
+  console.log('Clicked Grey Scale Button');
+  applyFilter('grayscale');
+});
+
+document.getElementById('fineEdgesButton').addEventListener('click', function() {
+  console.log('Clicked Fine Edges Button');
+  applyFilter('fine_edges');
+});
+
+document.getElementById('embossButton').addEventListener('click', function() {
+  console.log('Clicked Emboss Button');
+  applyFilter('emboss');
+});
+
+document.getElementById('edgeEnhancedMoreButton').addEventListener('click', function() {
+  console.log('Clicked Edge Enhanced More Button');
+  applyFilter('edge_enhanced_more');
+});
+
+  function updateBrightness(value) {
+  document.getElementById('brightnessOutput').textContent = value;
+  }
+  document.getElementById('imageInput').addEventListener('change', function(event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function(event) {
+      var imageDisplay = document.getElementById('imageDisplay');
+      imageDisplay.style.backgroundImage = "url('" + event.target.result + "')";
+      document.getElementById('selectImageButton').style.display = 'none'; // Hide the Select Image button
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+  function updateAngle(value) {
+    document.getElementById('angleOutput').textContent = value;
+  }
+  function updateIntensity(value) {
+  document.getElementById('intensityOutput').textContent = value;
+  }
+
+  function rotateImage() {
+  const angle = document.getElementById('angle').value;
+  const fileInput = document.getElementById('imageInput');
+  const file = fileInput.files[0];
+
+  if (!file) {
+    console.error('No image selected');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('image', file); // Append the image file
+  formData.append('angle', angle); // Append the rotation angle
+
+  fetch('/rotate', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.text())
+  .then(data => {
+    const imageDisplay = document.getElementById('imageDisplay');
+    imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')"; // Update the background image
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+function blurImage() {
+  const intensity = document.getElementById('intensity').value;
+  const fileInput = document.getElementById('imageInput');
+  const file = fileInput.files[0];
+
+  if (!file) {
+    console.error('No image selected');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('image', file); // Append the image file
+  formData.append('intensity', intensity); // Append the blur intensity
+
+  fetch('/blur', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.text())
+  .then(data => {
+    const imageDisplay = document.getElementById('imageDisplay');
+    imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')"; // Update the background image
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+function adjustContrast() {
+  const contrast = document.getElementById('contrast').value;
+  const fileInput = document.getElementById('imageInput');
+  const file = fileInput.files[0];
+
+  if (!file) {
+    console.error('No image selected');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('image', file); // Append the image file
+  formData.append('contrast', contrast); // Append the contrast value
+
+  fetch('/adjust_contrast', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.text())
+  .then(data => {
+    const imageDisplay = document.getElementById('imageDisplay');
+    imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')"; // Update the background image
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+function updateContrast(value) {
+  document.getElementById('contrastOutput').textContent = value;
+}
+function adjustBrightness() {
+  const brightness = document.getElementById('brightness').value;
+  const fileInput = document.getElementById('imageInput');
+  const file = fileInput.files[0];
+
+  if (!file) {
+    console.error('No image selected');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('image', file); // Append the image file
+  formData.append('brightness', brightness); // Append the brightness level
+
+  fetch('/adjust_brightness', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.text())
+  .then(data => {
+    const imageDisplay = document.getElementById('imageDisplay');
+    imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')"; // Update the background image
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+function applyFilter(filterValue) {
+  const imageInput = document.getElementById('imageInput');
+  const file = imageInput.files[0];
+
+  if (!file) {
+    console.error('No image selected');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('image', file);
+  formData.append('filter', filterValue);
+
+  fetch('/apply_filter', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.text())
+  .then(data => {
+    const imageDisplay = document.getElementById('imageDisplay');
+    imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')";
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+document.querySelector('.download').addEventListener('click', function() {
+    // Get the URL of the image displayed
+    const imageUrl = document.getElementById('imageDisplay').style.backgroundImage.slice(4, -1).replace(/"/g, "");
+
+    // Create a temporary anchor element
+    const tempAnchor = document.createElement('a');
+    
+    // Set the href attribute to the image URL
+    tempAnchor.href = imageUrl;
+    
+    // Set the download attribute to specify the filename for the downloaded image
+    tempAnchor.download = 'image.jpg'; // You can change 'image.jpg' to the desired filename
+    
+    // Append the anchor element to the document body
+    document.body.appendChild(tempAnchor);
+    
+    // Programmatically trigger a click event on the anchor to start the download
+    tempAnchor.click();
+    
+    // Remove the anchor element from the document body
+    document.body.removeChild(tempAnchor);
+});
+
+document.querySelector('.undo').addEventListener('click', function() {
+    fetch('/undo')
+    .then(response => response.text())
+    .then(data => {
+        const imageDisplay = document.getElementById('imageDisplay');
+        imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')";
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
+document.querySelector('.redo').addEventListener('click', function() {
+    fetch('/redo')
+    .then(response => response.text())
+    .then(data => {
+        const imageDisplay = document.getElementById('imageDisplay');
+        imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')";
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
+</script>
+
+</script>
+</html>
