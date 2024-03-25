@@ -82,17 +82,24 @@
       align-items: center;
       padding: 0;
     }
-
     .bottom-strip {
       width: 100%;
-      height: 60px;
+      height: 70px;
       background-color: black;
       display: flex;
-      justify-content: space-around;
+      justify-content: center; /* Center the wrapper horizontally */
       align-items: center;
       padding: 0;
       border-top: 1px solid #ccc;
     }
+
+    .filter-buttons-wrapper {
+      display: flex;
+      justify-content: space-between; /* Evenly distribute child elements */
+      align-items: center;
+      width: 80%; /* Adjust as needed */
+    }
+
 
     .image {
       flex: 1;
@@ -249,22 +256,112 @@
       <button type="button" onclick="adjustContrast()">Apply Contrast</button>
     </div>
 
-    <div id="filtersSection" style="display: none;">
-      <button id="greyScaleButton">Grey Scale</button>
-      <button id="fineEdgesButton">Fine Edges</button>
-      <button id="embossButton">Emboss</button>
-      <button id="edgeEnhancedMoreButton">Edge Enhanced More</button>
+    <div class="filter-buttons-wrapper" id="filterButtonsContainer" style="display: none;">
+      <a href="#" class="filter" id="greyScaleButton">
+        <img src="/static/grayscale1.png" width="22" height="30">
+        <span>Grey Scale</span>
+      </a>
+      <a href="#" class="filter" id="fineEdgesButton">
+        <img src="/static/findedges1.png" width="22" height="30">
+        <span>Find Edges</span>
+      </a>
+      <a href="#" class="filter" id="embossButton">
+        <img src="/static/emboss1.png" width="22" height="30">
+        <span>Emboss</span>
+      </a>
+      <a href="#" class="filter" id="edgeEnhancedMoreButton">
+        <img src="/static/edgeenhanced1.png" width="22" height="30">
+        <span>Edge Enhanced</span>
+      </a>
     </div>
-
+    <!-- Add input elements for crop dimensions with sliders -->
+<div id="cropSection" style="display: none;">
+  <label for="cropX">X:</label>
+  <input type="range" id="cropX" name="cropX" min="0" max="100" value="0" onchange="updateCropX(this.value)">
+  <output for="cropX" id="cropXOutput">0</output>
+  
+  <label for="cropY">Y:</label>
+  <input type="range" id="cropY" name="cropY" min="0" max="100" value="0" onchange="updateCropY(this.value)">
+  <output for="cropY" id="cropYOutput">0</output>
+  
+  <label for="cropWidth">Width:</label>
+  <input type="range" id="cropWidth" name="cropWidth" min="0" max="100" value="0" onchange="updateCropWidth(this.value)">
+  <output for="cropWidth" id="cropWidthOutput">0</output>
+  
+  <label for="cropHeight">Height:</label>
+  <input type="range" id="cropHeight" name="cropHeight" min="0" max="100" value="0" onchange="updateCropHeight(this.value)">
+  <output for="cropHeight" id="cropHeightOutput">0</output>
+  
+  <button type="button" onclick="applyCrop()">Apply Crop</button>
+</div>
+   
   </div>
   
 </div>
 </body>
 <script>
 
+function showSection(sectionId) {
+    // Hide all sections within the bottom strip
+    const sections = document.querySelectorAll('#bottomStrip > div');
+    sections.forEach(section => {
+        section.style.display = 'none';
+    });
+    // Show the selected section
+    document.getElementById(sectionId).style.display = 'block';
+}
+
 document.getElementById('selectImageButton').addEventListener('click', function() {
     document.getElementById('imageInput').click(); // Trigger the click event of the file input
 });
+document.getElementById('cropButton').addEventListener('click', function() {
+    showSection('cropSection');
+});
+function updateCropWidth(value) {
+  document.getElementById('cropWidthOutput').textContent = value;
+}
+
+function updateCropHeight(value) {
+  document.getElementById('cropHeightOutput').textContent = value;
+}
+
+function updateCropX(value) {
+  document.getElementById('cropXOutput').textContent = value;
+}
+
+function updateCropY(value) {
+  document.getElementById('cropYOutput').textContent = value;
+}
+
+function applyCrop() {
+    var cropX = document.getElementById('cropX').value;
+    var cropY = document.getElementById('cropY').value;
+    var cropWidth = document.getElementById('cropWidth').value;
+    var cropHeight = document.getElementById('cropHeight').value;
+
+    var formData = new FormData();
+    formData.append('image', document.getElementById('imageInput').files[0]);
+    formData.append('cropX', cropX);
+    formData.append('cropY', cropY);
+    formData.append('cropWidth', cropWidth);
+    formData.append('cropHeight', cropHeight);
+
+    fetch('/crop', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        // Update the image element with the cropped image data
+        document.getElementById('imageDisplay').style.backgroundImage = "url('data:image/png;base64," + data + "')";
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+
 
 document.getElementById('rotateButton').addEventListener('click', function() {
     showSection('rotateSection');
@@ -283,20 +380,11 @@ document.getElementById('brightnessButton').addEventListener('click', function()
 });
 
 document.getElementById('filtersButton').addEventListener('click', function() {
-    showSection('filtersSection');
+    // Toggle the display of the filter buttons container
+    const filterButtonsContainer = document.getElementById('filterButtonsContainer');
+    filterButtonsContainer.style.display = (filterButtonsContainer.style.display === 'none') ? 'flex' : 'none';
 });
 
-
-// Function to show a specific section and hide others
-function showSection(sectionId) {
-    // Hide all sections within the bottom strip
-    const sections = document.querySelectorAll('#bottomStrip > div');
-    sections.forEach(section => {
-        section.style.display = 'none';
-    });
-    // Show the selected section
-    document.getElementById(sectionId).style.display = 'block';
-}
 
  document.getElementById('greyScaleButton').addEventListener('click', function() {
   console.log('Clicked Grey Scale Button');
@@ -530,7 +618,40 @@ document.querySelector('.redo').addEventListener('click', function() {
     });
 });
 
-</script>
+document.getElementById('imageInput').addEventListener('change', function(event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function(event) {
+        // Convert the image to PNG format
+        convertToPNG(event.target.result);
+    };
+
+    reader.readAsDataURL(file);
+});
+
+function convertToPNG(imageData) {
+    var img = new Image();
+    img.src = imageData;
+
+    img.onload = function() {
+        var canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        // Convert the image to PNG format
+        var pngImageData = canvas.toDataURL('image/png');
+
+        // Display the PNG image for processing
+        var imageDisplay = document.getElementById('imageDisplay');
+        imageDisplay.style.backgroundImage = "url('" + pngImageData + "')";
+        document.getElementById('selectImageButton').style.display = 'none'; // Hide the Select Image button
+    };
+}
+
 
 </script>
 </html>
