@@ -10,6 +10,17 @@ app = Flask(__name__)
 def index():
     return render_template('editing.html')
     
+@app.route('/')
+def index():
+    return render_template('front.html')
+    
+@app.route('/final')
+def final():
+    return render_template('editing.html')
+
+@app.route('/developer')
+def developer():
+    return render_template('developer.html')
 
 @app.route('/rotate', methods=['POST'])
 def rotate():
