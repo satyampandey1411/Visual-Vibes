@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Vibes</title>
+    <link rel="icon" href="/static/fevi.png" type="image/x-icon">
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(45deg, #d75fff, #feb47b);
+  position: relative; /* Set position relative to body */
+}
+
+.container {
+  text-align: center;
+  position: absolute; /* Set position absolute to container */
+  top: 0px; /* Adjust top position */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+}
+
+h1 {
+  font-family: 'Arial', sans-serif;
+  font-size: 70px;
+  color: black;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin-bottom: 70px;
+}
+
+#slider {
+  width: 424px;
+  height: 210px;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+  border: 2px solid #000;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); /* Add box-shadow for 3D effect */
+  transform: scale(1.2); /* Zoom the box by 20% */
+}
+
+#slider img {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: 0;
+  left: 100%; /* Start off-screen */
+  transition: left 1.5s ease-in-out; /* Adjust transition duration */
+}
+
+#slider img.active {
+  left: 0; /* Slide into view */
+}
+
+.edit-button,
+.developer-button {
+  background: linear-gradient(45deg, #ff3b3b, #0055ff); /* Yellow gradient */
+  color: #000;
+  border: none;
+  border-radius: 20px;
+  padding: 15px 30px; /* Increased padding */
+  font-size: 20px; /* Increased font size */
+  cursor: pointer;
+  transition: background 0.3s ease;
+  position: absolute;
+}
+
+.edit-button {
+  /* Position the "Edit Your Image" button in the bottom left corner */
+  bottom: 20px;
+  left: 20px;
+}
+
+.developer-button {
+  /* Position the "Developer" button in the bottom right corner */
+  bottom: 20px;
+  right: 20px;
+}
+
+.edit-button:hover,
+.developer-button:hover {
+  background: linear-gradient(45deg, #fff176, #ffb74d); /* Lighter yellow gradient on hover */
+}
+
+.slogan {
+  font-size: 32px;
+  color: black;
+  position: absolute;
+  bottom: calc(40% - 130px); /* Adjust distance from the bottom */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%);
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1 id="visual-vibes">Visual Vibes</h1>
+  <div id="slider">
+    <img src="/static/a.png" class="active">
+    <img src="/static/b.png">
+    <img src="/static/c.png">
+    <img src="/static/d.png">
+    <img src="/static/e.png">
+  </div>
+</div>
+<button class="edit-button">Craft Your Masterpiece</button>
+<button class="developer-button">Developer</button>
+<div class="slogan">Transforming Imagination into Artistry</div>
+
+<script>
+  var images = document.querySelectorAll("#slider img");
+  var currentImage = 0;
+
+  function nextImage() {
+    images[currentImage].classList.remove("active");
+    currentImage = (currentImage + 1) % images.length;
+    images[currentImage].classList.add("active");
+  }
+
+  setInterval(nextImage, 2000); // Change image every 5 seconds
+
+  // Function to animate the text in the h1 element
+  function animateText() {
+    var title = document.getElementById("visual-vibes");
+    var text = title.textContent;
+    var index = 0;
+    title.textContent = "";
+    var interval = setInterval(function() {
+      title.textContent += text[index];
+      index++;
+      if (index >= text.length) {
+        clearInterval(interval);
+        setTimeout(function() {
+          animateText(); // Call the function again after a delay
+        }, 1000); // Adjust the delay between animations
+      }
+    }, 100); // Adjust the speed of animation
+  }
+
+  // Call the function to animate the text when the page loads
+  animateText();
+
+  // Add event listener to the "Craft Your Masterpiece" button
+  document.querySelector('.edit-button').addEventListener('click', function() {
+    window.location.href = "{{ url_for('final') }}"; // Redirect to final.html using url_for
+  });
+
+  // Add event listener to the "Developer" button
+  document.querySelector('.developer-button').addEventListener('click', function() {
+    window.location.href = "{{ url_for('developer') }}"; // Redirect to developer.html using url_for
+  });
+</script>
+
+</body>
+</html>
