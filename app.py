@@ -5,10 +5,6 @@ import base64
 from io import BytesIO
 
 app = Flask(__name__)
-
-@app.route('/')
-def index():
-    return render_template('editing.html')
     
 @app.route('/')
 def index():
