@@ -7,462 +7,568 @@
     <link rel="icon" href="/static/fevi.png" type="image/x-icon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      background-color:  black;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .container {
-      position: relative;
-      width: 97%;
-      max-width: 1000px;
-      height: 600px;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      overflow: hidden;
-    }
-
-    .filter-strip {
-      width: 60px;
-      background-color: black;
-      border-right: 1px solid #cccccc76;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-      align-items: center;
-      height: 100%;
-      padding: 0;
-      border-top-left-radius: 10px;
-      border-bottom-left-radius: 10px;
-      z-index: 1;
-    }
-
-    .filter {
-      width: 60px;
-      height: 60px;
-      background-color: black;
-      cursor: pointer;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      position: relative;
-      color: #fff;
-      text-decoration: none;
-    }
-
-    .filter-icon {
-      margin-bottom: 5px;
-    }
-
-    .filter-text {
-      font-size: 12px;
-    }
-
-    .horizontal-strip {
-      width: 100%; /* Adjusted to fill the width */
-      height: 60px;
-      background-color: black;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 0;
-    }
-    .bottom-strip {
-      width: 100%;
-      height: 70px;
-      background-color: black;
-      display: flex;
-      justify-content: center; /* Center the wrapper horizontally */
-      align-items: center;
-      padding: 0;
-      border-top: 1px solid #ccc;
-    }
-
-    .filter-buttons-wrapper {
-      display: flex;
-      justify-content: space-between; /* Evenly distribute child elements */
-      align-items: center;
-      width: 80%; /* Adjust as needed */
-    }
-
-
-    .image {
-      flex: 1;
-      background-image: url(''); /* Add your image URL here */
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      border-radius: 0 0 10px 10px;
-      margin: 20px 0;
-      width: 100%;
-      /*height: 100%; */
-      position: relative;     
-    }
-
-    .upload-area {
-      width: calc(100% - 20px);
-      height: 60px;
-      border-top: 1px solid #ccc;
-      background-color: #f0f0f0;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 10px;
-    }
-
-    .vertical-strip-container {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      width: 60px;
-      background-color: #f0f0f0;
-      border-top-left-radius: 10px;
-      border-bottom-left-radius: 10px;
-      z-index: 1;
-    }
-
-    /*.center-button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    } */
-    /* Center the image within the container */
-    #imageDisplay {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-     /* width: 800%;
-      height: 400%;
-      overflow: hidden; */
-    }
-
-    /* Ensure the image fills the container */
-    #imageDisplay img {
-      width: auto; /* Allow the image to expand */
-      height: 100%; /* Allow the image to expand */
-      object-fit: contain;
-    }
-
-    input[type=file] {
-      display: none;
-    }
-    .dotted-box {
-      border: 2px dashed black;
-      padding: 2px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 330px;
-    }
-
-    .button-container {
-      display: flex;
-      align-items: center; /* Align items vertically */
-    }
-
-    .center-button {
-      margin: 0 10px; /* Add spacing between the button and text */
-    }
-
-    .close-image {
-      position: absolute;
-      top: 60px; /* Adjust the top position as needed */
-      right: 0px; /* Adjust the right position as needed */
-      z-index: 1; /* Ensure it has a higher z-index than the image */
-    }
-
-</style>
-</head>
-<body>
-<div class="container">
-  <div class="vertical-strip-container">
-    <div class="filter-strip">
-      <a href="#" class="filter" id="rotateButton">
-        <i class='bx bx-rotate-left filter-icon' style="font-size: 30px; color: white;"></i>
-        <span class="filter-text" style="font-size: 17px">Rotate</span>
-      </a>
-      <a href="#" class="filter" id="blurButton">
-        <i class='fas fa-cloud' style="font-size: 30px; color: white;"></i>
-        <span class="filter-text" style="font-size: 17px">Blur</span>
-      </a>
-      <a href="#" class="filter" id="cropButton">
-        <i class='bx bx-crop filter-icon' style="font-size: 30px; color: white;"></i>
-        <span class="filter-text" style="font-size: 17px">Crop</span>
-      </a>     
-      <a href="#" class="filter" id="contrastButton">
-        <i class='fas fa-sliders-h' style="font-size: 30px; color: white;"></i>
-        <span class="filter-text" style="font-size: 17px">Contrast</span>
-      </a>
-      <a href="#" class="filter" id="brightnessButton">
-        <i class='bx bxs-brightness-half filter-icon' style="font-size: 30px; color: white;"></i>
-        <span class="filter-text" style="font-size: 17px">Brightness</span>
-      </a>
-      <a href="#" class="filter" id="filtersButton">
-        <i class='bx bx-photo-album' style="font-size: 30px; color: white;"></i>
-        <span class="filter-text" style="font-size: 17px">Filters</span>
-      </a> 
-    </div>
-  </div>
-
-  <div class="horizontal-strip">
-    <a href="#" class="filter">
-      <i class='bx bx-undo' style="font-size : 30px; color: white;"></i>
-      <span class="undo" style="font-size: 20px">Undo</span>
-    </a>
-    <a href="#" class="filter">
-      <i class='bx bx-redo' style='font-size:30px;color:white'></i>
-      <span class="redo" style="font-size: 20px">Redo</span>
-    </a>
-    <a href="#" class="filter">
-      <i class="bx bx-check-circle" style="font-size: 30px; color:white;"></i>
-      <span class="save" style="font-size: 20px">Save</span>
-    </a>
-    <a href="#" class="filter">
-      <i class="fas fa-sync" style="font-size:25px;color:white"></i>
-      <span class="reset" style="font-size: 20px">Reset</span>
-    </a>
-    <a href="#" class="filter">
-      <i class='bx bx-download' style="font-size: 30px; color: white;"></i>
-      <span class="download" style="font-size: 20px">Download</span>
-    </a> 
-  </div>
-  <div id="closeImage" class="close-image" style="display: none;">
-    <i class="fas fa-times" style="font-size: 25px;"></i>
-  </div>
-
-
-  <div class="image" id="imageDisplay"></div>
-  <input type="file" id="imageInput" accept="image/*" style="display: none;"> <!-- Hide the file input -->
-
-  <div class="dotted-box">
-    <i class='bx bxs-image-add' style="font-size: 50px;"></i><br>
-    <div class="button-container">
-      <button class="center-button" id="selectImageButton">Choose File</button>
-      <span id="fileStatus">NO FILE CHOOSEN</span>
-    </div>
-    <p id="hint">CHOOSE IMAGE FROM FOLDER</p>
-  </div>
-
-  <!-- <button class="center-button" id="selectImageButton">Select Image</button> -->
-
-  <div class="bottom-strip" id="bottomStrip">
-
-    <div id="rotateSection" style="display: none;">
-      <label for="angle">Rotation Angle:</label>
-      <input type="range" name="angle" id="angle" min="-180" max="180" value="0" step="1" oninput="updateAngle(this.value)">
-      <output for="angle" id="angleOutput">0</output> degrees
-      <button type="button" onclick="rotateImage()">Rotate</button>
-    </div>
-
-    <div id="blurSection" style="display: none;">
-      <label for="intensity">Blur Intensity:</label>
-      <input type="range" name="intensity" id="intensity" min="0" max="10" value="0" step="1" oninput="updateIntensity(this.value)">
-      <output for="intensity" id="intensityOutput">0</output>
-      <button type="button" onclick="blurImage()">Apply Blur</button>
-    </div>
-
-    <div id="brightnessSection" style="display: none;">
-      <label for="brightness">Brightness Level:</label>
-      <input type="range" name="brightness" id="brightness" min="0" max="200" value="100" step="1" oninput="updateBrightness(this.value)">
-      <output for="brightness" id="brightnessOutput">100</output>
-      <button type="button" onclick="adjustBrightness()">Apply Brightness</button>
-    </div>
-
-    <div id="contrastSection" style="display: none;">
-      <label for="contrast">Contrast:</label>
-      <input type="range" name="contrast" id="contrast" min="0" max="200" value="100" step="1" oninput="updateContrast(this.value)">
-      <output for="contrast" id="contrastOutput">100</output>
-      <button type="button" onclick="adjustContrast()">Apply Contrast</button>
-    </div>
-
-    <div class="filter-buttons-wrapper" id="filterButtonsContainer" style="display: none;">
-      <a href="#" class="filter" id="greyScaleButton">
-        <img src="/static/grayscale1.png" width="22" height="30">
-        <span>Grey Scale</span>
-      </a>
-      <a href="#" class="filter" id="fineEdgesButton">
-        <img src="/static/findedges1.png" width="22" height="30">
-        <span>Find Edges</span>
-      </a>
-      <a href="#" class="filter" id="embossButton">
-        <img src="/static/emboss1.png" width="22" height="30">
-        <span>Emboss</span>
-      </a>
-      <a href="#" class="filter" id="edgeEnhancedMoreButton">
-        <img src="/static/edgeenhanced1.png" width="22" height="30">
-        <span>Edge Enhanced</span>
-      </a>
-    </div>
-    <!-- Add input elements for crop dimensions with sliders -->
-<div id="cropSection" style="display: none;">
-  <label for="cropX">X:</label>
-  <input type="range" id="cropX" name="cropX" min="0" max="100" value="0" onchange="updateCropX(this.value)">
-  <output for="cropX" id="cropXOutput">0</output>
-  
-  <label for="cropY">Y:</label>
-  <input type="range" id="cropY" name="cropY" min="0" max="100" value="0" onchange="updateCropY(this.value)">
-  <output for="cropY" id="cropYOutput">0</output>
-  
-  <label for="cropWidth">Width:</label>
-  <input type="range" id="cropWidth" name="cropWidth" min="0" max="100" value="0" onchange="updateCropWidth(this.value)">
-  <output for="cropWidth" id="cropWidthOutput">0</output>
-  
-  <label for="cropHeight">Height:</label>
-  <input type="range" id="cropHeight" name="cropHeight" min="0" max="100" value="0" onchange="updateCropHeight(this.value)">
-  <output for="cropHeight" id="cropHeightOutput">0</output>
-  
-  <button type="button" onclick="applyCrop()">Apply Crop</button>
-</div>
-   
-  </div>
-  
-</div>
-<script>
-
-function showSection(sectionId) {
-    // Hide all sections within the bottom strip
-    const sections = document.querySelectorAll('#bottomStrip > div');
-    sections.forEach(section => {
-        section.style.display = 'none';
-    });
-    // Show the selected section
-    document.getElementById(sectionId).style.display = 'block';
+<style>
+      
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-color:  black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-document.getElementById('selectImageButton').addEventListener('click', function() {
-    document.getElementById('imageInput').click(); // Trigger the click event of the file input
+.container {
+    position: relative;
+    width: 97%;
+    max-width: 1000px;
+    height: 600px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+}
+
+.filter-strip {
+    width: 60px;
+    background-color: black;
+    border-right: 1px solid #cccccc76;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 100%;
+    padding: 0;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    z-index: 1;
+}
+
+.filter {
+    width: 60px;
+    height: 60px;
+    background-color: black;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    color: #fff;
+    text-decoration: none;
+}
+
+.filter-icon {
+    margin-bottom: 5px;
+}
+
+.filter-text {
+    font-size: 12px;
+}
+
+.horizontal-strip {
+    width: 100%; /* Adjusted to fill the width */
+    height: 60px;
+    background-color: black;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+}
+.bottom-strip {
+    width: 100%;
+    height: 70px;
+    background-color: black;
+    display: flex;
+    justify-content: center; /* Center the wrapper horizontally */
+    align-items: center;
+    padding: 0;
+    border-top: 1px solid #ccc;
+}
+
+.filter-buttons-wrapper {
+    display: flex;
+    justify-content: space-between; /* Evenly distribute child elements */
+    align-items: center;
+    width: 80%; /* Adjust as needed */
+}
+
+
+.upload-area {
+    width: calc(100% - 20px);
+    height: 60px;
+    border-top: 1px solid #ccc;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+}
+
+.vertical-strip-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 60px;
+    background-color: #f0f0f0;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    z-index: 1;
+}
+
+.image {
+  flex: 1;
+  background-image: url(''); /* Add your image URL here */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 0 0 10px 10px;
+  margin: 20px 0;
+  width: 100%;
+  /* height: 100%; Remove this line */
+  position: relative; /* Add this line */
+}
+
+#imageDisplay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+/* Ensure the image fills the container */
+#imageDisplay img {
+    width: auto; /* Allow the image to expand */
+    height: 100%; /* Allow the image to expand */
+    object-fit: contain;
+}
+
+input[type=file] {
+    display: none;
+}
+
+
+.dotted-box {
+  border: 2px dashed black;
+  padding: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 330px;
+}
+
+.button-container {
+  display: flex;
+  align-items: center; /* Align items vertically */
+}
+
+.center-button {
+  margin: 0 10px; /* Add spacing between the button and text */
+}
+
+.close-image {
+  position: absolute;
+  top: 60px; /* Adjust the top position as needed */
+  right: 0px; /* Adjust the right position as needed */
+  z-index: 1; /* Ensure it has a higher z-index than the image */
+}
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="vertical-strip-container">
+        <div class="filter-strip">
+          <a href="#" class="filter" id="rotateButton">
+            <i
+              class="bx bx-rotate-left filter-icon"
+              style="font-size: 30px; color: white"
+            ></i>
+            <span class="filter-text" style="font-size: 17px">Rotate</span>
+          </a>
+          <a href="#" class="filter" id="blurButton">
+            <i class="fas fa-cloud" style="font-size: 30px; color: white"></i>
+            <span class="filter-text" style="font-size: 17px">Blur</span>
+          </a>
+          <a href="#" class="filter" id="cropButton">
+            <i
+              class="bx bx-crop filter-icon"
+              style="font-size: 30px; color: white"
+            ></i>
+            <span class="filter-text" style="font-size: 17px">Crop</span>
+          </a>
+          <a href="#" class="filter" id="contrastButton">
+            <i
+              class="fas fa-sliders-h"
+              style="font-size: 30px; color: white"
+            ></i>
+            <span class="filter-text" style="font-size: 17px">Contrast</span>
+          </a>
+          <a href="#" class="filter" id="brightnessButton">
+            <i
+              class="bx bxs-brightness-half filter-icon"
+              style="font-size: 30px; color: white"
+            ></i>
+            <span class="filter-text" style="font-size: 17px">Brightness</span>
+          </a>
+          <a href="#" class="filter" id="filtersButton">
+            <i
+              class="bx bx-photo-album"
+              style="font-size: 30px; color: white"
+            ></i>
+            <span class="filter-text" style="font-size: 17px">Filters</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="horizontal-strip">
+        <a href="#" class="filter">
+          <i class="bx bx-undo" style="font-size: 30px; color: white"></i>
+          <span class="undo" style="font-size: 20px">Undo</span>
+        </a>
+        <a href="#" class="filter">
+          <i class="bx bx-redo" style="font-size: 30px; color: white"></i>
+          <span class="redo" style="font-size: 20px">Redo</span>
+        </a>
+        <a href="#" class="filter">
+          <i
+            class="bx bx-check-circle"
+            style="font-size: 30px; color: white"
+          ></i>
+          <span class="save" style="font-size: 20px">Save</span>
+        </a>
+        <a href="#" class="filter">
+          <i class="fas fa-sync" style="font-size: 25px; color: white"></i>
+          <span class="reset" style="font-size: 20px">Reset</span>
+        </a>
+        <a href="#" class="filter">
+          <i class="bx bx-download" style="font-size: 30px; color: white"></i>
+          <span class="download" style="font-size: 20px">Download</span>
+        </a>
+      </div>
+      <div id="closeImage" class="close-image" style="display: none;">
+        <i class="fas fa-times" style="font-size: 25px;"></i>
+      </div>
+
+      <div class="image" id="imageDisplay"></div>
+      <input
+        type="file"
+        id="imageInput"
+        accept="image/*"
+        style="display: none"
+      />
+
+      
+      <div class="dotted-box">
+        <i class='bx bxs-image-add' style="font-size: 50px;"></i><br>
+        <div class="button-container">
+          <button class="center-button" id="selectImageButton">Choose File</button>
+          <span id="fileStatus">NO FILE CHOOSEN</span>
+        </div>
+        <p id="hint">CHOOSE IMAGE FROM FOLDER</p>
+      </div> 
+      
+      <div class="bottom-strip" id="bottomStrip">
+        <div id="rotateSection" style="display: none">
+          <label for="angle">Rotation Angle:</label>
+          <input
+            type="range"
+            name="angle"
+            id="angle"
+            min="-180"
+            max="180"
+            value="0"
+            step="1"
+            oninput="updateAngle(this.value)"
+          />
+          <output for="angle" id="angleOutput">0</output> degrees
+          <button type="button" onclick="rotateImage()">Rotate</button>
+        </div>
+
+        <div id="blurSection" style="display: none">
+          <label for="intensity">Blur Intensity:</label>
+          <input
+            type="range"
+            name="intensity"
+            id="intensity"
+            min="0"
+            max="10"
+            value="0"
+            step="1"
+            oninput="updateIntensity(this.value)"
+          />
+          <output for="intensity" id="intensityOutput">0</output>
+          <button type="button" onclick="blurImage()">Apply Blur</button>
+        </div>
+
+        <div id="brightnessSection" style="display: none">
+          <label for="brightness">Brightness Level:</label>
+          <input
+            type="range"
+            name="brightness"
+            id="brightness"
+            min="0"
+            max="200"
+            value="100"
+            step="1"
+            oninput="updateBrightness(this.value)"
+          />
+          <output for="brightness" id="brightnessOutput">100</output>
+          <button type="button" onclick="adjustBrightness()">
+            Apply Brightness
+          </button>
+        </div>
+
+        <div id="contrastSection" style="display: none">
+          <label for="contrast">Contrast:</label>
+          <input
+            type="range"
+            name="contrast"
+            id="contrast"
+            min="0"
+            max="200"
+            value="100"
+            step="1"
+            oninput="updateContrast(this.value)"
+          />
+          <output for="contrast" id="contrastOutput">100</output>
+          <button type="button" onclick="adjustContrast()">
+            Apply Contrast
+          </button>
+        </div>
+
+        <div
+          class="filter-buttons-wrapper"
+          id="filterButtonsContainer"
+          style="display: none"
+        >
+          <a href="#" class="filter" id="greyScaleButton">
+            <img src="/static/grayscale1.png" width="22" height="30" />
+            <span>Grey Scale</span>
+          </a>
+          <a href="#" class="filter" id="fineEdgesButton">
+            <img src="/static/findedges1.png" width="22" height="30" />
+            <span>Find Edges</span>
+          </a>
+          <a href="#" class="filter" id="embossButton">
+            <img src="/static/emboss1.png" width="22" height="30" />
+            <span>Emboss</span>
+          </a>
+          <a href="#" class="filter" id="edgeEnhancedMoreButton">
+            <img src="/static/edgeenhanced1.png" width="22" height="30" />
+            <span>Edge Enhanced</span>
+          </a>
+        </div>
+        <!-- Add input elements for crop dimensions with sliders -->
+        <div id="cropSection" style="display: none">
+          <label for="cropX">X:</label>
+          <input
+            type="range"
+            id="cropX"
+            name="cropX"
+            min="0"
+            max="100"
+            value="0"
+            onchange="updateCropX(this.value)"
+          />
+          <output for="cropX" id="cropXOutput">0</output>
+
+          <label for="cropY">Y:</label>
+          <input
+            type="range"
+            id="cropY"
+            name="cropY"
+            min="0"
+            max="100"
+            value="0"
+            onchange="updateCropY(this.value)"
+          />
+          <output for="cropY" id="cropYOutput">0</output>
+
+          <label for="cropWidth">Width:</label>
+          <input
+            type="range"
+            id="cropWidth"
+            name="cropWidth"
+            min="0"
+            max="100"
+            value="0"
+            onchange="updateCropWidth(this.value)"
+          />
+          <output for="cropWidth" id="cropWidthOutput">0</output>
+
+          <label for="cropHeight">Height:</label>
+          <input
+            type="range"
+            id="cropHeight"
+            name="cropHeight"
+            min="0"
+            max="100"
+            value="0"
+            onchange="updateCropHeight(this.value)"
+          />
+          <output for="cropHeight" id="cropHeightOutput">0</output>
+
+          <button type="button" onclick="applyCrop()">Apply Crop</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      function showSection(sectionId) {
+  // Hide all sections within the bottom strip
+  const sections = document.querySelectorAll("#bottomStrip > div");
+  sections.forEach((section) => {
+    section.style.display = "none";
+  });
+  // Show the selected section
+  document.getElementById(sectionId).style.display = "block";
+}
+
+document
+  .getElementById("selectImageButton")
+  .addEventListener("click", function () {
+    document.getElementById("imageInput").click(); // Trigger the click event of the file input
+  });
+
+document.getElementById("cropButton").addEventListener("click", function () {
+  showSection("cropSection");
 });
-document.getElementById('cropButton').addEventListener('click', function() {
-    showSection('cropSection');
-});
+
 function updateCropWidth(value) {
-  document.getElementById('cropWidthOutput').textContent = value;
+  document.getElementById("cropWidthOutput").textContent = value;
 }
 
 function updateCropHeight(value) {
-  document.getElementById('cropHeightOutput').textContent = value;
+  document.getElementById("cropHeightOutput").textContent = value;
 }
 
 function updateCropX(value) {
-  document.getElementById('cropXOutput').textContent = value;
+  document.getElementById("cropXOutput").textContent = value;
 }
 
 function updateCropY(value) {
-  document.getElementById('cropYOutput').textContent = value;
+  document.getElementById("cropYOutput").textContent = value;
 }
 
 function applyCrop() {
-    var cropX = document.getElementById('cropX').value;
-    var cropY = document.getElementById('cropY').value;
-    var cropWidth = document.getElementById('cropWidth').value;
-    var cropHeight = document.getElementById('cropHeight').value;
+  var cropX = document.getElementById("cropX").value;
+  var cropY = document.getElementById("cropY").value;
+  var cropWidth = document.getElementById("cropWidth").value;
+  var cropHeight = document.getElementById("cropHeight").value;
 
-    var formData = new FormData();
-    formData.append('image', document.getElementById('imageInput').files[0]);
-    formData.append('cropX', cropX);
-    formData.append('cropY', cropY);
-    formData.append('cropWidth', cropWidth);
-    formData.append('cropHeight', cropHeight);
+  var formData = new FormData();
+  formData.append("image", document.getElementById("imageInput").files[0]);
+  formData.append("cropX", cropX);
+  formData.append("cropY", cropY);
+  formData.append("cropWidth", cropWidth);
+  formData.append("cropHeight", cropHeight);
 
-    fetch('/crop', {
-        method: 'POST',
-        body: formData
+  fetch("/crop", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.text())
+    .then((data) => {
+      // Update the image element with the cropped image data
+      document.getElementById("imageDisplay").style.backgroundImage =
+        "url('data:image/png;base64," + data + "')";
     })
-    .then(response => response.text())
-    .then(data => {
-        // Update the image element with the cropped image data
-        document.getElementById('imageDisplay').style.backgroundImage = "url('data:image/png;base64," + data + "')";
-    })
-    .catch(error => {
-        console.error('Error:', error);
+    .catch((error) => {
+      console.error("Error:", error);
     });
 }
 
-
-
-
-document.getElementById('rotateButton').addEventListener('click', function() {
-    showSection('rotateSection');
+document.getElementById("rotateButton").addEventListener("click", function () {
+  showSection("rotateSection");
 });
 
-document.getElementById('blurButton').addEventListener('click', function() {
-    showSection('blurSection');
+document.getElementById("blurButton").addEventListener("click", function () {
+  showSection("blurSection");
 });
 
-document.getElementById('contrastButton').addEventListener('click', function() {
-    showSection('contrastSection');
+document
+  .getElementById("contrastButton")
+  .addEventListener("click", function () {
+    showSection("contrastSection");
+  });
+
+document
+  .getElementById("brightnessButton")
+  .addEventListener("click", function () {
+    showSection("brightnessSection");
+  });
+
+document.getElementById("filtersButton").addEventListener("click", function () {
+  // Toggle the display of the filter buttons container
+  const filterButtonsContainer = document.getElementById(
+    "filterButtonsContainer"
+  );
+  filterButtonsContainer.style.display =
+    filterButtonsContainer.style.display === "none" ? "flex" : "none";
 });
 
-document.getElementById('brightnessButton').addEventListener('click', function() {
-    showSection('brightnessSection');
+document
+  .getElementById("greyScaleButton")
+  .addEventListener("click", function () {
+    console.log("Clicked Grey Scale Button");
+    applyFilter("grayscale");
+  });
+
+document
+  .getElementById("fineEdgesButton")
+  .addEventListener("click", function () {
+    console.log("Clicked Fine Edges Button");
+    applyFilter("fine_edges");
+  });
+
+document.getElementById("embossButton").addEventListener("click", function () {
+  console.log("Clicked Emboss Button");
+  applyFilter("emboss");
 });
 
-document.getElementById('filtersButton').addEventListener('click', function() {
-    // Toggle the display of the filter buttons container
-    const filterButtonsContainer = document.getElementById('filterButtonsContainer');
-    filterButtonsContainer.style.display = (filterButtonsContainer.style.display === 'none') ? 'flex' : 'none';
-});
+document
+  .getElementById("edgeEnhancedMoreButton")
+  .addEventListener("click", function () {
+    console.log("Clicked Edge Enhanced More Button");
+    applyFilter("edge_enhanced_more");
+  });
 
+function updateBrightness(value) {
+  document.getElementById("brightnessOutput").textContent = value;
+}
 
- document.getElementById('greyScaleButton').addEventListener('click', function() {
-  console.log('Clicked Grey Scale Button');
-  applyFilter('grayscale');
-});
-
-document.getElementById('fineEdgesButton').addEventListener('click', function() {
-  console.log('Clicked Fine Edges Button');
-  applyFilter('fine_edges');
-});
-
-document.getElementById('embossButton').addEventListener('click', function() {
-  console.log('Clicked Emboss Button');
-  applyFilter('emboss');
-});
-
-document.getElementById('edgeEnhancedMoreButton').addEventListener('click', function() {
-  console.log('Clicked Edge Enhanced More Button');
-  applyFilter('edge_enhanced_more');
-});
-
-  function updateBrightness(value) {
-  document.getElementById('brightnessOutput').textContent = value;
-  }
-  document.getElementById('imageInput').addEventListener('change', function(event) {
+document
+  .getElementById("imageInput")
+  .addEventListener("change", function (event) {
     var file = event.target.files[0];
     var reader = new FileReader();
 
-    reader.onload = function(event) {
-      var imageDisplay = document.getElementById('imageDisplay');
+    reader.onload = function (event) {
+      var imageDisplay = document.getElementById("imageDisplay");
       imageDisplay.style.backgroundImage = "url('" + event.target.result + "')";
-      document.getElementById('selectImageButton').style.display = 'none'; // Hide the Select Image button
+      document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when an image is selected
+      // Show the close button
+      document.querySelector(".close-image").style.display = "block";
     };
 
     reader.readAsDataURL(file);
@@ -473,241 +579,257 @@ document.getElementById('edgeEnhancedMoreButton').addEventListener('click', func
       document.querySelector(".dotted-box").style.display = "block"; // Show the dotted box
       this.style.display = "none"; // Hide the close button again
     });
-
   });
 
-  function updateAngle(value) {
-    document.getElementById('angleOutput').textContent = value;
-  }
-  function updateIntensity(value) {
-  document.getElementById('intensityOutput').textContent = value;
-  }
+function updateAngle(value) {
+  document.getElementById("angleOutput").textContent = value;
+}
 
-  function rotateImage() {
-  const angle = document.getElementById('angle').value;
-  const fileInput = document.getElementById('imageInput');
+function updateIntensity(value) {
+  document.getElementById("intensityOutput").textContent = value;
+}
+
+function rotateImage() {
+  const angle = document.getElementById("angle").value;
+  const fileInput = document.getElementById("imageInput");
   const file = fileInput.files[0];
 
   if (!file) {
-    console.error('No image selected');
+    console.error("No image selected");
     return;
   }
 
   const formData = new FormData();
-  formData.append('image', file); // Append the image file
-  formData.append('angle', angle); // Append the rotation angle
+  formData.append("image", file); // Append the image file
+  formData.append("angle", angle); // Append the rotation angle
 
-  fetch('/rotate', {
-    method: 'POST',
-    body: formData
+  fetch("/rotate", {
+    method: "POST",
+    body: formData,
   })
-  .then(response => response.text())
-  .then(data => {
-    const imageDisplay = document.getElementById('imageDisplay');
-    imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')"; // Update the background image
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+    .then((response) => response.text())
+    .then((data) => {
+      const imageDisplay = document.getElementById("imageDisplay");
+      imageDisplay.style.backgroundImage =
+        "url('data:image/png;base64," + data + "')"; // Update the background image
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }
 
 function blurImage() {
-  const intensity = document.getElementById('intensity').value;
-  const fileInput = document.getElementById('imageInput');
+  const intensity = document.getElementById("intensity").value;
+  const fileInput = document.getElementById("imageInput");
   const file = fileInput.files[0];
 
   if (!file) {
-    console.error('No image selected');
+    console.error("No image selected");
     return;
   }
 
   const formData = new FormData();
-  formData.append('image', file); // Append the image file
-  formData.append('intensity', intensity); // Append the blur intensity
+  formData.append("image", file); // Append the image file
+  formData.append("intensity", intensity); // Append the blur intensity
 
-  fetch('/blur', {
-    method: 'POST',
-    body: formData
+  fetch("/blur", {
+    method: "POST",
+    body: formData,
   })
-  .then(response => response.text())
-  .then(data => {
-    const imageDisplay = document.getElementById('imageDisplay');
-    imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')"; // Update the background image
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+    .then((response) => response.text())
+    .then((data) => {
+      const imageDisplay = document.getElementById("imageDisplay");
+      imageDisplay.style.backgroundImage =
+        "url('data:image/png;base64," + data + "')"; // Update the background image
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }
 
 function adjustContrast() {
-  const contrast = document.getElementById('contrast').value;
-  const fileInput = document.getElementById('imageInput');
+  const contrast = document.getElementById("contrast").value;
+  const fileInput = document.getElementById("imageInput");
   const file = fileInput.files[0];
 
   if (!file) {
-    console.error('No image selected');
+    console.error("No image selected");
     return;
   }
 
   const formData = new FormData();
-  formData.append('image', file); // Append the image file
-  formData.append('contrast', contrast); // Append the contrast value
+  formData.append("image", file); // Append the image file
+  formData.append("contrast", contrast); // Append the contrast value
 
-  fetch('/adjust_contrast', {
-    method: 'POST',
-    body: formData
+  fetch("/adjust_contrast", {
+    method: "POST",
+    body: formData,
   })
-  .then(response => response.text())
-  .then(data => {
-    const imageDisplay = document.getElementById('imageDisplay');
-    imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')"; // Update the background image
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+    .then((response) => response.text())
+    .then((data) => {
+      const imageDisplay = document.getElementById("imageDisplay");
+        imageDisplay.style.backgroundImage =
+        "url('data:image/png;base64," + data + "')"; // Update the background image
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }
 
 function updateContrast(value) {
-  document.getElementById('contrastOutput').textContent = value;
+  document.getElementById("contrastOutput").textContent = value;
 }
+
 function adjustBrightness() {
-  const brightness = document.getElementById('brightness').value;
-  const fileInput = document.getElementById('imageInput');
+  const brightness = document.getElementById("brightness").value;
+  const fileInput = document.getElementById("imageInput");
   const file = fileInput.files[0];
 
   if (!file) {
-    console.error('No image selected');
+    console.error("No image selected");
     return;
   }
 
   const formData = new FormData();
-  formData.append('image', file); // Append the image file
-  formData.append('brightness', brightness); // Append the brightness level
+  formData.append("image", file); // Append the image file
+  formData.append("brightness", brightness); // Append the brightness level
 
-  fetch('/adjust_brightness', {
-    method: 'POST',
-    body: formData
+  fetch("/adjust_brightness", {
+    method: "POST",
+    body: formData,
   })
-  .then(response => response.text())
-  .then(data => {
-    const imageDisplay = document.getElementById('imageDisplay');
-    imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')"; // Update the background image
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
-document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when brightness is adjusted
+    .then((response) => response.text())
+    .then((data) => {
+      const imageDisplay = document.getElementById("imageDisplay");
+      imageDisplay.style.backgroundImage =
+        "url('data:image/png;base64," + data + "')"; // Update the background image
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+
+  document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when brightness is adjusted
 }
 
 function applyFilter(filterValue) {
-  const imageInput = document.getElementById('imageInput');
+  const imageInput = document.getElementById("imageInput");
   const file = imageInput.files[0];
 
   if (!file) {
-    console.error('No image selected');
+    console.error("No image selected");
     return;
   }
 
   const formData = new FormData();
-  formData.append('image', file);
-  formData.append('filter', filterValue);
+  formData.append("image", file);
+  formData.append("filter", filterValue);
 
-  fetch('/apply_filter', {
-    method: 'POST',
-    body: formData
+  fetch("/apply_filter", {
+    method: "POST",
+    body: formData,
   })
-  .then(response => response.text())
-  .then(data => {
-    const imageDisplay = document.getElementById('imageDisplay');
-    imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')";
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
-document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when filter is applied
+    .then((response) => response.text())
+    .then((data) => {
+      const imageDisplay = document.getElementById("imageDisplay");
+      imageDisplay.style.backgroundImage =
+        "url('data:image/png;base64," + data + "')";
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+
+  document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when filter is applied
 }
 
-document.querySelector('.download').addEventListener('click', function() {
-    // Get the URL of the image displayed
-    const imageUrl = document.getElementById('imageDisplay').style.backgroundImage.slice(4, -1).replace(/"/g, "");
+document.querySelector(".download").addEventListener("click", function () {
+  // Get the URL of the image displayed
+  const imageUrl = document
+    .getElementById("imageDisplay")
+    .style.backgroundImage.slice(4, -1)
+    .replace(/"/g, "");
 
-    // Create a temporary anchor element
-    const tempAnchor = document.createElement('a');
-    
-    // Set the href attribute to the image URL
-    tempAnchor.href = imageUrl;
-    
-    // Set the download attribute to specify the filename for the downloaded image
-    tempAnchor.download = 'image.jpg'; // You can change 'image.jpg' to the desired filename
-    
-    // Append the anchor element to the document body
-    document.body.appendChild(tempAnchor);
-    
-    // Programmatically trigger a click event on the anchor to start the download
-    tempAnchor.click();
-    
-    // Remove the anchor element from the document body
-    document.body.removeChild(tempAnchor);
+  // Create a temporary anchor element
+  const tempAnchor = document.createElement("a");
+
+  // Set the href attribute to the image URL
+  tempAnchor.href = imageUrl;
+
+  // Set the download attribute to specify the filename for the downloaded image
+  tempAnchor.download = "image.jpg"; // You can change 'image.jpg' to the desired filename
+
+  // Append the anchor element to the document body
+  document.body.appendChild(tempAnchor);
+
+  // Programmatically trigger a click event on the anchor to start the download
+  tempAnchor.click();
+
+  // Remove the anchor element from the document body
+  document.body.removeChild(tempAnchor);
 });
 
-document.querySelector('.undo').addEventListener('click', function() {
-    fetch('/undo')
-    .then(response => response.text())
-    .then(data => {
-        const imageDisplay = document.getElementById('imageDisplay');
-        imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')";
+document.querySelector(".undo").addEventListener("click", function () {
+  fetch("/undo")
+    .then((response) => response.text())
+    .then((data) => {
+      const imageDisplay = document.getElementById("imageDisplay");
+      imageDisplay.style.backgroundImage =
+        "url('data:image/png;base64," + data + "')";
     })
-    .catch(error => {
-        console.error('Error:', error);
+    .catch((error) => {
+      console.error("Error:", error);
     });
 });
 
-document.querySelector('.redo').addEventListener('click', function() {
-    fetch('/redo')
-    .then(response => response.text())
-    .then(data => {
-        const imageDisplay = document.getElementById('imageDisplay');
-        imageDisplay.style.backgroundImage = "url('data:image/png;base64," + data + "')";
+document.querySelector(".redo").addEventListener("click", function () {
+  fetch("/redo")
+    .then((response) => response.text())
+    .then((data) => {
+      const imageDisplay = document.getElementById("imageDisplay");
+      imageDisplay.style.backgroundImage =
+        "url('data:image/png;base64," + data + "')";
     })
-    .catch(error => {
-        console.error('Error:', error);
+    .catch((error) => {
+      console.error("Error:", error);
     });
 });
 
-document.getElementById('imageInput').addEventListener('change', function(event) {
+document
+  .getElementById("imageInput")
+  .addEventListener("change", function (event) {
     var file = event.target.files[0];
     var reader = new FileReader();
 
-    reader.onload = function(event) {
-        // Convert the image to PNG format
-        convertToPNG(event.target.result);
+    reader.onload = function (event) {
+      // Convert the image to PNG format
+      convertToPNG(event.target.result);
     };
 
     reader.readAsDataURL(file);
-});
+  });
 
 function convertToPNG(imageData) {
-    var img = new Image();
-    img.src = imageData;
+  var img = new Image();
+  img.src = imageData;
 
-    img.onload = function() {
-        var canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
+  img.onload = function () {
+    var canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
 
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
 
-        // Convert the image to PNG format
-        var pngImageData = canvas.toDataURL('image/png');
+    // Convert the image to PNG format
+    var pngImageData = canvas.toDataURL("image/png");
 
-        // Display the PNG image for processing
-        var imageDisplay = document.getElementById('imageDisplay');
-        imageDisplay.style.backgroundImage = "url('" + pngImageData + "')";
-        document.getElementById('selectImageButton').style.display = 'none'; // Hide the Select Image button
-    };
+    // Display the PNG image for processing
+    var imageDisplay = document.getElementById("imageDisplay");
+    imageDisplay.style.backgroundImage = "url('" + pngImageData + "')";
+    document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when image is converted to PNG
+  };
 }
 
-
-</script>
+    </script>
+  </body>
 </html>
+
