@@ -111,7 +111,8 @@
       border-radius: 0 0 10px 10px;
       margin: 20px 0;
       width: 100%;
-      height: 100%;
+      /*height: 100%; */
+      position: relative;     
     }
 
     .upload-area {
@@ -141,20 +142,20 @@
       z-index: 1;
     }
 
-    .center-button {
+    /*.center-button {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-    }
+    } */
     /* Center the image within the container */
     #imageDisplay {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 800%;
+     /* width: 800%;
       height: 400%;
-      overflow: hidden; /* Ensure the image doesn't overflow its container */
+      overflow: hidden; */
     }
 
     /* Ensure the image fills the container */
@@ -167,6 +168,37 @@
     input[type=file] {
       display: none;
     }
+    .dotted-box {
+      border: 2px dashed black;
+      padding: 2px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 330px;
+    }
+
+    .button-container {
+      display: flex;
+      align-items: center; /* Align items vertically */
+    }
+
+    .center-button {
+      margin: 0 10px; /* Add spacing between the button and text */
+    }
+
+    .close-image {
+      position: absolute;
+      top: 60px; /* Adjust the top position as needed */
+      right: 0px; /* Adjust the right position as needed */
+      z-index: 1; /* Ensure it has a higher z-index than the image */
+    }
+
 </style>
 </head>
 <body>
@@ -222,10 +254,24 @@
       <span class="download" style="font-size: 20px">Download</span>
     </a> 
   </div>
+  <div id="closeImage" class="close-image" style="display: none;">
+    <i class="fas fa-times" style="font-size: 25px;"></i>
+  </div>
+
 
   <div class="image" id="imageDisplay"></div>
   <input type="file" id="imageInput" accept="image/*" style="display: none;"> <!-- Hide the file input -->
-  <button class="center-button" id="selectImageButton">Select Image</button>
+
+  <div class="dotted-box">
+    <i class='bx bxs-image-add' style="font-size: 50px;"></i><br>
+    <div class="button-container">
+      <button class="center-button" id="selectImageButton">Choose File</button>
+      <span id="fileStatus">NO FILE CHOOSEN</span>
+    </div>
+    <p id="hint">CHOOSE IMAGE FROM FOLDER</p>
+  </div>
+
+  <!-- <button class="center-button" id="selectImageButton">Select Image</button> -->
 
   <div class="bottom-strip" id="bottomStrip">
 
@@ -299,7 +345,6 @@
   </div>
   
 </div>
-</body>
 <script>
 
 function showSection(sectionId) {
@@ -421,6 +466,14 @@ document.getElementById('edgeEnhancedMoreButton').addEventListener('click', func
     };
 
     reader.readAsDataURL(file);
+
+    document.querySelector(".close-image").addEventListener("click", function () {
+      var imageDisplay = document.getElementById("imageDisplay");
+      imageDisplay.style.backgroundImage = "none"; // Remove the background image
+      document.querySelector(".dotted-box").style.display = "block"; // Show the dotted box
+      this.style.display = "none"; // Hide the close button again
+    });
+
   });
 
   function updateAngle(value) {
@@ -543,6 +596,7 @@ function adjustBrightness() {
   .catch(error => {
     console.error('Error:', error);
   });
+document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when brightness is adjusted
 }
 
 function applyFilter(filterValue) {
@@ -570,6 +624,7 @@ function applyFilter(filterValue) {
   .catch(error => {
     console.error('Error:', error);
   });
+document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when filter is applied
 }
 
 document.querySelector('.download').addEventListener('click', function() {
