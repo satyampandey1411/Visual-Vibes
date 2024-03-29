@@ -10,7 +10,7 @@ app = Flask(__name__)
 def index():
     return render_template('front.html')
     
-@app.route('/final')
+@app.route('/Craft Your Masterpiece')
 def final():
     return render_template('editing.html')
 
