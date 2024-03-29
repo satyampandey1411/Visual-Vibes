@@ -433,8 +433,32 @@ input[type=file] {
         </div>
       </div>
     </div>
+    
+
+
+
     <script>
-      function showSection(sectionId) {
+
+
+
+
+
+
+
+
+
+
+
+// Define a global variable to store the URL of the initially selected image
+let initialImageURL = "";
+
+// Function to update the displayed image with new data
+function updateDisplayedImage(data) {
+  document.getElementById("imageDisplay").style.backgroundImage =
+    "url('data:image/png;base64," + data + "')";
+}
+
+function showSection(sectionId) {
   // Hide all sections within the bottom strip
   const sections = document.querySelectorAll("#bottomStrip > div");
   sections.forEach((section) => {
@@ -443,12 +467,6 @@ input[type=file] {
   // Show the selected section
   document.getElementById(sectionId).style.display = "block";
 }
-
-document
-  .getElementById("selectImageButton")
-  .addEventListener("click", function () {
-    document.getElementById("imageInput").click(); // Trigger the click event of the file input
-  });
 
 document.getElementById("cropButton").addEventListener("click", function () {
   showSection("cropSection");
@@ -490,13 +508,15 @@ function applyCrop() {
     .then((response) => response.text())
     .then((data) => {
       // Update the image element with the cropped image data
-      document.getElementById("imageDisplay").style.backgroundImage =
-        "url('data:image/png;base64," + data + "')";
+      updateDisplayedImage(data);
     })
     .catch((error) => {
       console.error("Error:", error);
     });
 }
+
+// Other functions for updating UI elements and applying image processing features remain unchanged...
+
 
 document.getElementById("rotateButton").addEventListener("click", function () {
   showSection("rotateSection");
@@ -506,80 +526,71 @@ document.getElementById("blurButton").addEventListener("click", function () {
   showSection("blurSection");
 });
 
-document
-  .getElementById("contrastButton")
-  .addEventListener("click", function () {
-    showSection("contrastSection");
-  });
+document.getElementById("contrastButton").addEventListener("click", function () {
+  showSection("contrastSection");
+});
 
-document
-  .getElementById("brightnessButton")
-  .addEventListener("click", function () {
-    showSection("brightnessSection");
-  });
+document.getElementById("brightnessButton").addEventListener("click", function () {
+  showSection("brightnessSection");
+});
 
 document.getElementById("filtersButton").addEventListener("click", function () {
   // Toggle the display of the filter buttons container
-  const filterButtonsContainer = document.getElementById(
-    "filterButtonsContainer"
-  );
+  const filterButtonsContainer = document.getElementById("filterButtonsContainer");
   filterButtonsContainer.style.display =
     filterButtonsContainer.style.display === "none" ? "flex" : "none";
 });
 
-document
-  .getElementById("greyScaleButton")
-  .addEventListener("click", function () {
-    console.log("Clicked Grey Scale Button");
-    applyFilter("grayscale");
-  });
+document.getElementById("greyScaleButton").addEventListener("click", function () {
+  console.log("Clicked Grey Scale Button");
+  applyFilter("grayscale");
+});
 
-document
-  .getElementById("fineEdgesButton")
-  .addEventListener("click", function () {
-    console.log("Clicked Fine Edges Button");
-    applyFilter("fine_edges");
-  });
+document.getElementById("fineEdgesButton").addEventListener("click", function () {
+  console.log("Clicked Fine Edges Button");
+  applyFilter("fine_edges");
+});
 
 document.getElementById("embossButton").addEventListener("click", function () {
   console.log("Clicked Emboss Button");
   applyFilter("emboss");
 });
 
-document
-  .getElementById("edgeEnhancedMoreButton")
-  .addEventListener("click", function () {
-    console.log("Clicked Edge Enhanced More Button");
-    applyFilter("edge_enhanced_more");
-  });
+document.getElementById("edgeEnhancedMoreButton").addEventListener("click", function () {
+  console.log("Clicked Edge Enhanced More Button");
+  applyFilter("edge_enhanced_more");
+});
 
 function updateBrightness(value) {
   document.getElementById("brightnessOutput").textContent = value;
 }
 
-document
-  .getElementById("imageInput")
-  .addEventListener("change", function (event) {
-    var file = event.target.files[0];
-    var reader = new FileReader();
+document.getElementById("imageInput").addEventListener("change", function (event) {
+  var file = event.target.files[0];
+  var reader = new FileReader();
 
-    reader.onload = function (event) {
-      var imageDisplay = document.getElementById("imageDisplay");
-      imageDisplay.style.backgroundImage = "url('" + event.target.result + "')";
-      document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when an image is selected
-      // Show the close button
-      document.querySelector(".close-image").style.display = "block";
-    };
+  reader.onload = function (event) {
+    var imageDisplay = document.getElementById("imageDisplay");
+    imageDisplay.style.backgroundImage = "url('" + event.target.result + "')";
+    document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when an image is selected
+    // Show the close button
+    document.querySelector(".close-image").style.display = "block";
+    // Store the URL of the initially selected image
+    initialImageURL = event.target.result;
+  };
 
-    reader.readAsDataURL(file);
+  reader.readAsDataURL(file);
+});
 
-    document.querySelector(".close-image").addEventListener("click", function () {
-      var imageDisplay = document.getElementById("imageDisplay");
-      imageDisplay.style.backgroundImage = "none"; // Remove the background image
-      document.querySelector(".dotted-box").style.display = "block"; // Show the dotted box
-      this.style.display = "none"; // Hide the close button again
-    });
-  });
+document.querySelector(".close-image").addEventListener("click", function () {
+  var imageDisplay = document.getElementById("imageDisplay");
+  imageDisplay.style.backgroundImage = "none"; // Remove the background image
+  document.querySelector(".dotted-box").style.display = "block"; // Show the dotted box
+  this.style.display = "none"; // Hide the close button again
+
+  // Clear the selected file from the file input
+  document.getElementById("imageInput").value = "";
+});
 
 function updateAngle(value) {
   document.getElementById("angleOutput").textContent = value;
@@ -668,168 +679,178 @@ function adjustContrast() {
     .then((response) => response.text())
     .then((data) => {
       const imageDisplay = document.getElementById("imageDisplay");
-        imageDisplay.style.backgroundImage =
-        "url('data:image/png;base64," + data + "')"; // Update the background image
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+  imageDisplay.style.backgroundImage =
+    "url('data:image/png;base64," + data + "')"; // Update the background image
+})
+.catch((error) => {
+  console.error("Error:", error);
+});
 }
 
 function updateContrast(value) {
-  document.getElementById("contrastOutput").textContent = value;
+document.getElementById("contrastOutput").textContent = value;
 }
 
 function adjustBrightness() {
-  const brightness = document.getElementById("brightness").value;
-  const fileInput = document.getElementById("imageInput");
-  const file = fileInput.files[0];
+const brightness = document.getElementById("brightness").value;
+const fileInput = document.getElementById("imageInput");
+const file = fileInput.files[0];
 
-  if (!file) {
-    console.error("No image selected");
-    return;
-  }
+if (!file) {
+console.error("No image selected");
+return;
+}
 
-  const formData = new FormData();
-  formData.append("image", file); // Append the image file
-  formData.append("brightness", brightness); // Append the brightness level
+const formData = new FormData();
+formData.append("image", file); // Append the image file
+formData.append("brightness", brightness); // Append the brightness level
 
-  fetch("/adjust_brightness", {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => response.text())
-    .then((data) => {
-      const imageDisplay = document.getElementById("imageDisplay");
-      imageDisplay.style.backgroundImage =
-        "url('data:image/png;base64," + data + "')"; // Update the background image
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+fetch("/adjust_brightness", {
+method: "POST",
+body: formData,
+})
+.then((response) => response.text())
+.then((data) => {
+const imageDisplay = document.getElementById("imageDisplay");
+imageDisplay.style.backgroundImage =
+"url('data:image/png;base64," + data + "')"; // Update the background image
+})
+.catch((error) => {
+console.error("Error:", error);
+});
 
-  document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when brightness is adjusted
+document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when brightness is adjusted
 }
 
 function applyFilter(filterValue) {
-  const imageInput = document.getElementById("imageInput");
-  const file = imageInput.files[0];
+const imageInput = document.getElementById("imageInput");
+const file = imageInput.files[0];
 
-  if (!file) {
-    console.error("No image selected");
-    return;
-  }
+if (!file) {
+console.error("No image selected");
+return;
+}
 
-  const formData = new FormData();
-  formData.append("image", file);
-  formData.append("filter", filterValue);
+const formData = new FormData();
+formData.append("image", file);
+formData.append("filter", filterValue);
 
-  fetch("/apply_filter", {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => response.text())
-    .then((data) => {
-      const imageDisplay = document.getElementById("imageDisplay");
-      imageDisplay.style.backgroundImage =
-        "url('data:image/png;base64," + data + "')";
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+fetch("/apply_filter", {
+method: "POST",
+body: formData,
+})
+.then((response) => response.text())
+.then((data) => {
+const imageDisplay = document.getElementById("imageDisplay");
+imageDisplay.style.backgroundImage =
+"url('data:image/png;base64," + data + "')";
+})
+.catch((error) => {
+console.error("Error:", error);
+});
 
-  document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when filter is applied
+document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when filter is applied
 }
 
 document.querySelector(".download").addEventListener("click", function () {
-  // Get the URL of the image displayed
-  const imageUrl = document
-    .getElementById("imageDisplay")
-    .style.backgroundImage.slice(4, -1)
-    .replace(/"/g, "");
+// Get the URL of the image displayed
+const imageUrl = document
+.getElementById("imageDisplay")
+.style.backgroundImage.slice(4, -1)
+.replace(/"/g, "");
 
-  // Create a temporary anchor element
-  const tempAnchor = document.createElement("a");
+// Create a temporary anchor element
+const tempAnchor = document.createElement("a");
 
-  // Set the href attribute to the image URL
-  tempAnchor.href = imageUrl;
+// Set the href attribute to the image URL
+tempAnchor.href = imageUrl;
 
-  // Set the download attribute to specify the filename for the downloaded image
-  tempAnchor.download = "image.jpg"; // You can change 'image.jpg' to the desired filename
+// Set the download attribute to specify the filename for the downloaded image
+tempAnchor.download = "image.jpg"; // You can change 'image.jpg' to the desired filename
 
-  // Append the anchor element to the document body
-  document.body.appendChild(tempAnchor);
+// Append the anchor element to the document body
+document.body.appendChild(tempAnchor);
 
-  // Programmatically trigger a click event on the anchor to start the download
-  tempAnchor.click();
+// Programmatically trigger a click event on the anchor to start the download
+tempAnchor.click();
 
-  // Remove the anchor element from the document body
-  document.body.removeChild(tempAnchor);
+// Remove the anchor element from the document body
+document.body.removeChild(tempAnchor);
 });
 
 document.querySelector(".undo").addEventListener("click", function () {
-  fetch("/undo")
-    .then((response) => response.text())
-    .then((data) => {
-      const imageDisplay = document.getElementById("imageDisplay");
-      imageDisplay.style.backgroundImage =
-        "url('data:image/png;base64," + data + "')";
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+fetch("/undo")
+.then((response) => response.text())
+.then((data) => {
+const imageDisplay = document.getElementById("imageDisplay");
+imageDisplay.style.backgroundImage =
+"url('data:image/png;base64," + data + "')";
+})
+.catch((error) => {
+console.error("Error:", error);
+});
 });
 
 document.querySelector(".redo").addEventListener("click", function () {
-  fetch("/redo")
-    .then((response) => response.text())
-    .then((data) => {
-      const imageDisplay = document.getElementById("imageDisplay");
-      imageDisplay.style.backgroundImage =
-        "url('data:image/png;base64," + data + "')";
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+fetch("/redo")
+.then((response) => response.text())
+.then((data) => {
+const imageDisplay = document.getElementById("imageDisplay");
+imageDisplay.style.backgroundImage =
+"url('data:image/png;base64," + data + "')";
+})
+.catch((error) => {
+console.error("Error:", error);
+});
 });
 
 document
-  .getElementById("imageInput")
-  .addEventListener("change", function (event) {
-    var file = event.target.files[0];
-    var reader = new FileReader();
+.getElementById("imageInput")
+.addEventListener("change", function (event) {
+var file = event.target.files[0];
+var reader = new FileReader();
 
-    reader.onload = function (event) {
-      // Convert the image to PNG format
-      convertToPNG(event.target.result);
-    };
+reader.onload = function (event) {
+// Convert the image to PNG format
+convertToPNG(event.target.result);
+};
 
-    reader.readAsDataURL(file);
-  });
+reader.readAsDataURL(file);
+});
 
 function convertToPNG(imageData) {
-  var img = new Image();
-  img.src = imageData;
+var img = new Image();
+img.src = imageData;
 
-  img.onload = function () {
-    var canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
+img.onload = function () {
+var canvas = document.createElement("canvas");
+canvas.width = img.width;
+canvas.height = img.height;
 
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
+var ctx = canvas.getContext("2d");
+ctx.drawImage(img, 0, 0);
 
-    // Convert the image to PNG format
-    var pngImageData = canvas.toDataURL("image/png");
+// Convert the image to PNG format
+var pngImageData = canvas.toDataURL("image/png");
 
-    // Display the PNG image for processing
-    var imageDisplay = document.getElementById("imageDisplay");
-    imageDisplay.style.backgroundImage = "url('" + pngImageData + "')";
-    document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when image is converted to PNG
-  };
+// Display the PNG image for processing
+var imageDisplay = document.getElementById("imageDisplay");
+imageDisplay.style.backgroundImage = "url('" + pngImageData + "')";
+document.querySelector(".dotted-box").style.display = "none"; // Hide the dotted box when image is converted to PNG
+};
 }
 
-    </script>
-  </body>
-</html>
+// Inside the event listener for the reset button, set the backgroundImage back to the initially selected image URL
+document.querySelector(".reset").addEventListener("click", function () {
+// Set the backgroundImage back to the initially selected image URL
+document.getElementById("imageDisplay").style.backgroundImage = "url('" + initialImageURL + "')";
+});
 
+document.getElementById("selectImageButton").addEventListener("click", function () {
+    document.getElementById("imageInput").click(); // Trigger the click event of the file input
+});
+
+
+</script>
+</body>
+</html>
